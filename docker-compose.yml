@@ -1,0 +1,45 @@
+version: '3.6'
+
+services:
+  # server:
+  #   restart: always
+  #   build: ./server
+  #   volumes:
+  #     - ./server:/usr/src/server
+  #     - /usr/src/server/node_modules
+  #   environment:
+  #     SERVER_PORT: ${SERVER_PORT}
+  #     MYSQL_HOST: db
+  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
+  #     MYSQL_USER: ${MYSQL_USER}
+  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  #     TOKEN_SECRET: ${TOKEN_SECRET}
+  #   ports:
+  #     - 3001:8765
+  #   depends_on:
+  #     - db
+
+  db:
+    restart: always
+    image: mysql:5.7
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - ./db/db-data:/var/lib/mysql
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      MYSQL_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306:3306
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
