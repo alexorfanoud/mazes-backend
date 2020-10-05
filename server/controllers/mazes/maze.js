@@ -16,7 +16,19 @@ const info = async (id) => {
             return [{maze:Array.from(maze[0].maze)}]
         }
 }
+const creator_info = async (creator_name) => {
 
+    if(!creator_name) {
+        const mazes = await query('SELECT Id,maze FROM mazes');
+
+        return mazes.map( maze => ({Id:(maze.Id.toString()), maze:Array.from(maze.maze)}))
+    }
+    else {
+        const creator_id = await query('SELECT Id FROM user WHERE email=?',[creator_name])
+        const mazes = await query('SELECT maze FROM mazes WHERE creator=?', [creator_id]);
+        return mazes.map( maze => ({Id:(maze.Id.toString()), maze:Array.from(maze.maze)}))
+    }
+}
 const addMaze = async ( maze, token ) => {
     try{
         const decoded = await jwt.decode(token);
@@ -36,5 +48,6 @@ const addMaze = async ( maze, token ) => {
 
 module.exports = {
     info:info,
-    addMaze:addMaze
+    addMaze:addMaze,
+    creator_info:creator_info
 }
