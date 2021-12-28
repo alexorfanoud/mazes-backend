@@ -15,22 +15,17 @@ const getConnection = util.promisify(pool.getConnection).bind(pool);
 const query = util.promisify(pool.query).bind(pool);
 
 const connectDB = async () => {
-    let retries = 5;
-    let res;
-    while(retries > 0){
+    while(1){
         try{
             res = await getConnection();
             console.log('--------mysql pool connected-------------');
             res.release()
             break;
         }catch(e){
-            retries--;
-            console.log(e.message, `, Retries remaining: ${retries}`);
+            console.log(e.message);
             await new Promise(resolve => setTimeout(resolve,5000))
         }
     }
-    if(retries===0) console.log('Unable to connect to mysql');
-    
 }
 
 connectDB();
