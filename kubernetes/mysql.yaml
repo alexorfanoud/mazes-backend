@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: mysql
+    labels:
+        run: mysql
+spec:
+    type: ClusterIP
+    ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: mysql
+    selector:
+        app: mysql
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mysql
+    labels:
+        app: mysql
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: mysql
+    template:
+        metadata:
+            name: mysql
+            labels:
+                app: mysql
+        spec:
+            containers:
+            - name: mysql
+              image: mysql:5.6
+              ports:
+              - containerPort: 3306
+              envFrom:
+                - configMapRef:
+                    name: app-conf
+              volumeMounts:
+              - name: mysql-persistent-storage
+                mountPath: /var/lib/mysql
+              - name: mysql-init-script
+                mountPath: /docker-entrypoint-initdb.d
+            volumes:
+            - name: mysql-persistent-storage
+              persistentVolumeClaim:
+                claimName: mysql-pv-claim
+            - name: mysql-init-script
+              configMap:
+                  name: mysql-initdb
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---

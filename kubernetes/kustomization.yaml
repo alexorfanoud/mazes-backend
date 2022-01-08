@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: thesis
+
+images:
+  - name: aorfanou/mazes_backend
+    newName: aorfanou/mazes-backend-test
+    newTag: latest
+
+resources:
+  - namespace.yaml
+  - app-config.yaml
+  - backend.yaml
+  - adminer.yaml
+  - mysql.yaml
+  - stress_ng.yaml
+
+configMapGenerator:
+    - name: mysql-initdb
+      files:
+      - mysql-initdb-config.sql
