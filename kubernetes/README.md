@@ -20,7 +20,7 @@ docker push $MAZES_IMAGE:$MAZES_TAG
 ```
 
 ## To run
-* Replace the <newimage> placeholder in mazes-kubernetes/kustomization.yaml
+* Replace the `newName` and `newTag` field in [kustomization.yaml](kustomization.yaml) with the newly created image and tag
 ```
 kubectl apply -k .
 ```
