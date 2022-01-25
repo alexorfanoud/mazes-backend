@@ -1,0 +1,7 @@
+---
+- name: test playbook
+  hosts: nodes
+  tasks:
+
+  - name: run hostname
+    command: "hostname"
