@@ -2,6 +2,7 @@
 
 IMAGE_NAME="minikube_thesis"
 NODES=2
+CLUSTER_NAME="thesis"
 
 # ssh keys setup required for the docker image
 rm $(pwd)/docker/.ssh/id_rsa*
@@ -11,8 +12,8 @@ ssh-keygen -f $(pwd)/docker/.ssh/id_rsa -N ""
 docker build -t $IMAGE_NAME docker
 
 # recreate cluster
-minikube delete -p thesis && \
-minikube start -p thesis \
+minikube delete -p $CLUSTER_NAME && \
+minikube start -p $CLUSTER_NAME \
 	--base-image $IMAGE_NAME \
 	--nodes $NODES
 
@@ -20,7 +21,7 @@ minikube start -p thesis \
 echo "[nodes]" > ansible/inventory
 for node in $(kubectl get nodes | grep -v NAME | awk '{print $1}');
 do
-	node_ip=$(minikube ip -p thesis -n $node)
+	node_ip=$(minikube ip -p $CLUSTER_NAME -n $node)
 	echo "$node ansible_host=$node_ip" >> ansible/inventory
 done
 

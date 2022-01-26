@@ -18,12 +18,12 @@
       rsync_opts:
       - "--chown=ansible:ansible"
 
-  - name: build cmt-cat
+  - name: Build cmt-cat
     shell: 
       chdir: /home/ansible/intel-cmt-cat
       cmd: make && make install PREFIX=/usr
 
-  - name: build PRM
+  - name: Build PRM
     shell: 
       chdir: /home/ansible/platform-resource-manager
-      cmd: ./setup.sh
+      cmd: ./resetup.sh
