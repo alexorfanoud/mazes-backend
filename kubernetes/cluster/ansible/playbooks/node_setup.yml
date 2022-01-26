@@ -1,0 +1,29 @@
+---
+- name: Setting up the cluster node environment
+  hosts: nodes
+  become: yes
+  tasks:
+
+  - name: Copy PRM
+    synchronize: 
+      src:  ../../platform-resource-manager
+      dest:  /home/ansible
+      rsync_opts:
+      - "--chown=ansible:ansible"
+
+  - name: Copy cmt-cat
+    synchronize: 
+      src:  ../../intel-cmt-cat
+      dest:  /home/ansible
+      rsync_opts:
+      - "--chown=ansible:ansible"
+
+  - name: build cmt-cat
+    shell: 
+      chdir: /home/ansible/intel-cmt-cat
+      cmd: make && make install PREFIX=/usr
+
+  - name: build PRM
+    shell: 
+      chdir: /home/ansible/platform-resource-manager
+      cmd: ./setup.sh

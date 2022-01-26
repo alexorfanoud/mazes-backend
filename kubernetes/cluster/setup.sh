@@ -3,7 +3,7 @@
 IMAGE_NAME="minikube_thesis"
 NODES=2
 
-# ssh keys setup
+# ssh keys setup required for the docker image
 rm $(pwd)/docker/.ssh/id_rsa*
 ssh-keygen -f $(pwd)/docker/.ssh/id_rsa -N ""
 
@@ -16,15 +16,15 @@ minikube start -p thesis \
 	--base-image $IMAGE_NAME \
 	--nodes $NODES
 
-# Build ansible inventory
+# Build ansible inventory dynamically
 echo "[nodes]" > ansible/inventory
 for node in $(kubectl get nodes | grep -v NAME | awk '{print $1}');
 do
-	node_ip=$(minikube ip -p thesis $node)
+	node_ip=$(minikube ip -p thesis -n $node)
 	echo "$node ansible_host=$node_ip" >> ansible/inventory
 done
 
 # Run playbooks
 pushd ansible
-ansible-playbook playbooks/test.yaml
+ansible-playbook playbooks/node_setup.yaml
 popd

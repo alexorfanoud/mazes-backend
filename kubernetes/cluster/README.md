@@ -1,7 +1,14 @@
-## TODOs
+## Dependencies
 
-* add prm + cmt cat as submodules
-* add playbook to copy them over to the nodes
-* add playbook to build them 
-* add playbook to run them
+1. Install ansible
+
+## Spin up cluster
+
+```
+# Will build the appropriate base docker image for minikube nodes
+# And perform all the necessary setup for ansible and PRM to be able to run
+./setup.sh
+```
+
+## TODOS
 * add playbook to mount resctrl filesystem

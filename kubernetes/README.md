@@ -4,7 +4,14 @@
 2. Install minikube: https://minikube.sigs.k8s.io/docs/start/
 3. Install kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 4. Install golang: https://go.dev/doc/install
-5. Start minikube with the appropriate configuration
+
+## Cluster setup
+
+### PRM 
+If you wish to run PRM, or have ansible for more provisioning control over the cluster, please follow the instructions in the [Cluster README](./cluster/README.md)
+
+### Basic minikube setup
+If you only wish to run the cluster and deploy the manifests, you can do so with the below command:
 ```
 minikube delete -p thesis && minikube start -p thesis \
 --nodes 2 \

@@ -1,3 +1,6 @@
 [submodule "kubernetes/cluster/platform-resource-manager"]
 	path = kubernetes/cluster/platform-resource-manager
 	url = git@github.com:alexorfanoud/platform-resource-manager.git
+[submodule "kubernetes/cluster/intel-cmt-cat"]
+	path = kubernetes/cluster/intel-cmt-cat
+	url = git@github.com:alexorfanoud/intel-cmt-cat.git
