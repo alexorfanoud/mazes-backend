@@ -1,0 +1,3 @@
+[submodule "kubernetes/cluster/platform-resource-manager"]
+	path = kubernetes/cluster/platform-resource-manager
+	url = git@github.com:alexorfanoud/platform-resource-manager.git
