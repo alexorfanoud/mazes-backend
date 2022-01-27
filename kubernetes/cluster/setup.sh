@@ -27,5 +27,5 @@ done
 
 # Run playbooks
 pushd ansible
-ansible-playbook playbooks/node_setup.yml
+ansible-playbook playbooks/build_prm.yml
 popd

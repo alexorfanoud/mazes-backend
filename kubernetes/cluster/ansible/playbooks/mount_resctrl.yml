@@ -1,0 +1,12 @@
+---
+- name: Mount resctrl fs for rdt
+  hosts: nodes
+  become: yes
+  tasks:
+
+  - name: Mount resctrl 
+    ansible.posix.mount: 
+      src:  resctrl
+      path:  /sys/fs/resctrl
+      state: mounted
+      fstype: resctrl
