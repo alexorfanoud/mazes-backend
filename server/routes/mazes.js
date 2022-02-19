@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const mazeController = require('../controllers/mazes/maze')
+const { solve } = require('../controllers/mazes/solver/solver')
 
 router.post('/', async (req,res) => {
     const token = req.headers['authorisation']
@@ -30,6 +31,15 @@ router.get('/:mazeId', async (req,res) => {
     }
 })
 
+router.get('/:mazeId/solve', async (req,res) => {
+    try {
+        const maze = await mazeController.info(req.params.mazeId)
+		const solution = solve(maze[0].maze)
+        res.send(solution);
+    }catch(e){
+        res.status(e.status).send(e.info);
+    }
+})
 
 
 

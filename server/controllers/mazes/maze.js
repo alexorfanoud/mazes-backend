@@ -34,13 +34,13 @@ const addMaze = async ( maze, token ) => {
         const decoded = await jwt.decode(token);
         const userId = decoded._id;
         validate(maze);
-        const creator = await query('SELECT email FROM user WHERE Id=?', [userId]);
         const result = await query('INSERT INTO mazes(maze,creator) VALUES (?,?)', [maze, userId]);
         
         return [{ Id:result.insertId.toString(), maze:Array.from(maze) }]
     }
     catch(e){
-        throw new BadRequest({msg:e.message})
+		if (e instanceof BadRequest) { throw e }
+		else throw new BadRequest({msg:e.message})
     }
         
 
