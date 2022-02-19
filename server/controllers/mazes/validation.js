@@ -1,7 +1,7 @@
 const validator = require('validator')
 const { BadRequest } = require('../../errors/models')
 
-const validate = (maze) => {
+const validate = (maze, size) => {
     let startCounter = 0,targetCounter = 0;
     for(let i=0;i<maze.length;i++){
         maze[i]==='S' ? startCounter++ :
@@ -11,8 +11,8 @@ const validate = (maze) => {
             throw new BadRequest({maze:`Invalid maze format, found a '${maze[i]}' at position ${i}`});
         }
     }
-    if( maze.length !== 196 ) {
-        throw new BadRequest({maze:`Invalid maze format, expected 196 blocks, got ${maze.length}`})
+    if( maze.length % size != 0) {
+        throw new BadRequest({maze:`Invalid declared sizeX for maze, expected sizeX of ${size} but got maze string of length ${maze.length}`})
     }
 }
 

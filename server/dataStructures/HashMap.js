@@ -6,7 +6,7 @@ class HashMap {
         this.map[JSON.stringify(key)] = value;
         return this.map        
     }
-    has(key) { return !!this.map[JSON.stringify(key)] }
+    has(key) { return this.map[JSON.stringify(key)] !== undefined }
     entries() {
         Object.keys(this.map).map( key => [key,this.map[key]])
 	}
