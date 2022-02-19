@@ -13,7 +13,7 @@ router.post('/', async (req,res) => {
 
 router.get('/generate', async (req,res) => {
     try {
-        const maze = await mazeController.generate(req.params.size)
+        const maze = await mazeController.generate(req.body.size)
         res.send(maze);
     }catch(e){
 		console.log(e)

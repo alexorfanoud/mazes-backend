@@ -95,10 +95,24 @@ const solve = ( maze, sizeX ) => {
     return { visited: visited, path:path}
 }
 
-const generate = async ( size ) => {
+const generate = async ( size, density = 1.2, difficulty = 100 ) => {
     try{
-		maze = ".....................ST............."
-        
+		// Fill array based on the provided obstacle density
+		maze = Array(size*size)
+			.fill()
+			.map((_, elem) => {return Math.floor(Math.random() * density) === 1 ? "X" : "."})
+
+		// Generate random start point 
+		startIdx = Math.floor(Math.random() * (size * size - 1))
+		maze[startIdx] = "S"
+
+		// Solve the maze to find all the points that can be reached
+		const {visited, path} = solve(maze, size)
+		
+		// Set the target position as one of the reachable nodes on the grid
+		const targetPos = visited[Math.floor((visited.length-1) * (difficulty/100))];
+		maze[targetPos] = "T"
+
         return { maze:Array.from(maze) }
     }
     catch(e){
