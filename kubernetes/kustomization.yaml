@@ -4,7 +4,10 @@ namespace: thesis
 
 images:
   - name: aorfanou/mazes_backend
-    newName: aorfanou/mazes-backend-test
+    newName: aorfanou/mazes_backend
+    newTag: latest
+  - name: aorfanou/mazes_benchmark
+    newName: aorfanou/mazes_benchmark
     newTag: latest
 
 resources:
@@ -13,7 +16,9 @@ resources:
   - backend.yaml
   - adminer.yaml
   - mysql.yaml
-  - stress_ng.yaml
+  - benchmark.yaml
+  # - stress_ng.yaml
+  # - parsec.yaml
 
 configMapGenerator:
     - name: mysql-initdb

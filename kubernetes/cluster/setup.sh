@@ -1,7 +1,7 @@
 #! /bin/bash
 
 IMAGE_NAME="minikube_thesis"
-NODES=2
+NODES=1
 CLUSTER_NAME="thesis"
 
 # ssh keys setup required for the docker image
@@ -28,4 +28,5 @@ done
 # Run playbooks
 pushd ansible
 ansible-playbook playbooks/build_prm.yml
+ansible-playbook playbooks/mount_resctrl.yml
 popd

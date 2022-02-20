@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parsec
+  labels:
+    app: parsec
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parsec
+  template:
+    metadata:
+      name: parsec
+      labels:
+        app: parsec
+    spec:
+      containers:
+
+      - name: parsec
+        imagePullPolicy: Always # for debugging purpose and stream the development!
+        image: spirals/parsec-3.0
+        securityContext:
+          privileged: true
