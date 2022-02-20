@@ -43,3 +43,10 @@ services:
       - db
     ports:
       - 8080:8080
+
+  benchmark:
+    build: ./benchmark
+    depends_on:
+      - server
+    tty: true
+    command: "--url http://server:${SERVER_PORT} --maze_size 10 --subprocesses 10 --verbose"

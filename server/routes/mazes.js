@@ -4,7 +4,7 @@ const mazeController = require('../controllers/mazes/maze')
 router.post('/', async (req,res) => {
     const token = req.headers['authorisation']
     try {
-        const addMaze = await mazeController.add(req.body.maze, req.body.sizeX, token);
+        const addMaze = await mazeController.add(req.body.maze, parseInt(req.body.sizeX), token);
         res.send(addMaze);
     }catch(e){
         res.status(e.status).send(e.info);
@@ -13,7 +13,7 @@ router.post('/', async (req,res) => {
 
 router.get('/generate', async (req,res) => {
     try {
-        const maze = await mazeController.generate(req.body.size)
+        const maze = await mazeController.generate(parseInt(req.body.size))
         res.send(maze);
     }catch(e){
 		console.log(e)
