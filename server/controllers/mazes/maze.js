@@ -21,18 +21,36 @@ const info = async (id) => {
         }
 }
 
-const creator_info = async (creator_name) => {
+const highscoreAvg = async (mazeId) => {
 
-    if(!creator_name) {
-        const mazes = await query('SELECT Id,maze FROM mazes');
+    const highscoreAvg = await query(`
+		SELECT avg(hs.score)
+		from
+			highscores hs
+			inner join mazes m on m.Id = hs.mazeId
+		where
+			m.Id = ?
+		`, [mazeId]);
 
-        return mazes.map( maze => ({Id:(maze.Id.toString()), maze:Array.from(maze.maze)}))
-    }
-    else {
-        const creator_id = await query('SELECT Id FROM user WHERE email=?',[creator_name])
-        const mazes = await query('SELECT maze FROM mazes WHERE creator=?', [creator_id]);
-        return mazes.map( maze => ({Id:(maze.Id.toString()), maze:Array.from(maze.maze)}))
-    }
+	return highscoreAvg
+}
+
+const getBestScoreUser = async (mazeId) => {
+
+    const bestUsers = await query(`
+		SELECT 
+			u.email,
+			hs.score,
+			hs.created_at
+		FROM 
+			highscores hs
+			inner join user u on u.Id=hs.userId
+		WHERE
+			score = (select max(score) from highscores where mazeId = ?)
+			and mazeId = ?
+		`, [mazeId, mazeId]);
+
+	return bestUsers
 }
 
 const add = async ( maze, size, token ) => {
@@ -50,6 +68,20 @@ const add = async ( maze, size, token ) => {
     }
 }
         
+const addHighscore = async ( mazeId, token, score, created_at ) => {
+    try{
+        const decoded = await jwt.decode(token);
+        const userId = decoded._id;
+        const result = await query('INSERT INTO highscores(mazeId,userId,score,created_at) VALUES (?,?,?,?)', [mazeId, userId, score, created_at]);
+        
+        return result
+    }
+    catch(e){
+		if (e instanceof BadRequest) { throw e }
+		else throw new BadRequest({msg:e.message})
+    }
+}
+
 const solve = ( maze, sizeX ) => {
 
 	// Find start and finish
@@ -124,7 +156,9 @@ const generate = async ( size, density = 1.2, difficulty = 100 ) => {
 module.exports = {
     info:info,
     add:add,
-    creator_info:creator_info,
 	generate: generate,
-	solve: solve
+	solve: solve,
+	highscoreAvg: highscoreAvg,
+	getBestScoreUser: getBestScoreUser,
+	addHighscore: addHighscore
 }

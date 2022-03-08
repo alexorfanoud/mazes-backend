@@ -40,6 +40,37 @@ router.get('/:mazeId/solve', async (req,res) => {
     }
 })
 
+router.get('/:mazeId/hsAvg', async (req,res) => {
+
+    try {
+        const highscoreAvg = await mazeController.highscoreAvg(req.params.mazeId);
+        res.send(highscoreAvg);
+    }catch(e){
+        res.status(e.status).send(e.info);
+    }
+})
+
+router.get('/:mazeId/bestScoreUser', async (req,res) => {
+
+    try {
+        const bestUser = await mazeController.getBestScoreUser(req.params.mazeId);
+        res.send(bestUser);
+    }catch(e){
+        res.status(e.status).send(e.info);
+    }
+})
+
+router.post('/:mazeId/highscores', async (req,res) => {
+
+    const token = req.headers['authorisation']
+    try {
+        const newHighscore = await mazeController.addHighscore(req.params.mazeId, token, req.body.score, req.body.created_at);
+        res.send(newHighscore);
+    }catch(e){
+        res.status(e.status).send(e.info);
+    }
+})
+
 router.get('/', async (req,res) => {
 
     try {

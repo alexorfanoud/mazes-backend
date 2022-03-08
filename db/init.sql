@@ -53,5 +53,3 @@ DO
    DELETE FROM expired_tokens
    WHERE created_at < CURRENT_TIMESTAMP - INTERVAL 1 HOUR
 ;                  
-
--- INSERT INTO user(email,password) VALUES('root@root.com','root') //TODO ADD ROOT USER
