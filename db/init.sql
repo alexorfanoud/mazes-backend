@@ -53,3 +53,7 @@ DO
    DELETE FROM expired_tokens
    WHERE created_at < CURRENT_TIMESTAMP - INTERVAL 1 HOUR
 ;                  
+
+LOAD DATA LOCAL INFILE '/var/lib/myslq/init-files/init_user.txt' INTO TABLE user;
+LOAD DATA LOCAL INFILE '/var/lib/myslq/init-files/init_mazes.txt' INTO TABLE mazes;
+LOAD DATA LOCAL INFILE '/var/lib/myslq/init-files/init_highscores.txt' INTO TABLE highscores;
