@@ -33,6 +33,17 @@ spec:
             labels:
                 app: mysql
         spec:
+            initContainers:
+              - name: install
+                image: busybox
+                command:
+                - wget
+                - "-O"
+                - "/var/lib/mysql-highscores/init_highscores.txt"
+                - https://raw.githubusercontent.com/alexorfanoud/mazes-backend/master/db/init_highscores.txt
+                volumeMounts:
+                - name: mysql-init-script-highscores
+                  mountPath: /var/lib/mysql-highscores
             containers:
             - name: mysql
               image: mysql:5.6
@@ -46,6 +57,15 @@ spec:
                 mountPath: /var/lib/mysql
               - name: mysql-init-script
                 mountPath: /docker-entrypoint-initdb.d
+              - name: mysql-init-script-mazes
+                mountPath: /var/lib/mysql-data/init_mazes.txt
+                subPath: init_mazes.txt
+              - name: mysql-init-script-users
+                mountPath: /var/lib/mysql-data/init_users.txt
+                subPath: init_users.txt
+              - name: mysql-init-script-highscores
+                mountPath: /var/lib/mysql-data/init_highscores.txt
+                subPath: init_highscores.txt
             volumes:
             - name: mysql-persistent-storage
               persistentVolumeClaim:
@@ -53,6 +73,14 @@ spec:
             - name: mysql-init-script
               configMap:
                   name: mysql-initdb
+            - name: mysql-init-script-mazes
+              configMap:
+                  name: mysql-initdb-mazes
+            - name: mysql-init-script-users
+              configMap:
+                  name: mysql-initdb-users
+            - name: mysql-init-script-highscores
+              emptyDir: {}
 ---
 
 apiVersion: v1

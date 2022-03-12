@@ -53,3 +53,7 @@ DO
    DELETE FROM expired_tokens
    WHERE created_at < CURRENT_TIMESTAMP - INTERVAL 1 HOUR
 ;                  
+
+LOAD DATA LOCAL INFILE '/var/lib/mysql-data/init_users.txt' INTO TABLE user;
+LOAD DATA LOCAL INFILE '/var/lib/mysql-data/init_mazes.txt' INTO TABLE mazes;
+LOAD DATA LOCAL INFILE '/var/lib/mysql-data/init_highscores.txt' INTO TABLE highscores;

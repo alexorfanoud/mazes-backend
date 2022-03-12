@@ -16,7 +16,7 @@ resources:
   - backend.yaml
   - adminer.yaml
   - mysql.yaml
-  - benchmark.yaml
+  # - benchmark.yaml
   # - stress_ng.yaml
   # - parsec.yaml
 
@@ -24,3 +24,9 @@ configMapGenerator:
     - name: mysql-initdb
       files:
       - mysql-initdb-config.sql
+    - name: mysql-initdb-mazes
+      files:
+      - db-data/init_mazes.txt
+    - name: mysql-initdb-users
+      files:
+      - db-data/init_users.txt
