@@ -8,7 +8,7 @@ router.post( '/signup',async (req, res)=>{
         const user = await authController.signup(req.body);
         res.send(user);
     }catch(e){
-        res.status(e.status).send(e.info)
+        res.status(e.status || 500).send(e.info)
     }        
 })
 
@@ -18,7 +18,7 @@ router.post( '/login',async (req, res)=>{
         const userInfo = await authController.login(req.body);
         res.send(userInfo);
     }catch(e){
-        res.status(e.status).send(e.info)
+        res.status(e.status || 500).send(e.info)
     }        
 })
 
@@ -30,7 +30,7 @@ router.post(
             const result = await  authController.logout(req.headers['authorisation']);
             res.send(result);
         }catch(e){
-            res.status(e.status).send(e.info)
+            res.status(e.status || 500).send(e.info)
         }        
 })
 

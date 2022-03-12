@@ -9,6 +9,7 @@ import time
 results = []
 requests_output_file = "/tmp/mazes_benchmark_metrics_requests.csv"
 queries_output_file = "/tmp/mazes_benchmark_metrics_queries.csv"
+MAZE_ID_HIGHSCORE_DATA = 1
 
 def init_args():
     parser = argparse.ArgumentParser()
@@ -21,12 +22,6 @@ def init_args():
     parser.add_argument('--subprocesses', type=int, required=False,
             help="Number of maximum processes to spawn\
                 Default=5", default=5)
-    parser.add_argument('--query_highscores', type=int, required=False,
-            help="Number of rows to scan for the complex queries benchmark\
-                Default=10000", default=10000)
-    parser.add_argument('--query_users', type=int, required=False,
-            help="Spread entries among this number of users for the complex queries benchmark\
-                Default=100", default=100)
     parser.add_argument('--verbose', action="store_true",
             help="Extra verbosity")
 
@@ -34,14 +29,21 @@ def init_args():
     ARGS = parser.parse_args()
     print(ARGS)
 
-def generate_random_datetime():
-    year = random.randint(1,10000)
-    month = random.randint(1,12)
-    day = random.randint(1,28)
-    hour = random.randint(1,23)
-    minute = random.randint(1,59)
-    second = random.randint(1,59)
-    return f"{year}-{month}-{day} {hour}:{minute}:{second}"
+def establish_connection():
+    endpoint = "/healthcheck/db"
+    status_code = -1
+    retry_counter = 0
+    while status_code != 200:
+        time.sleep(5)
+        try:
+            if ARGS.verbose:
+                print("Trying to reach server healthcheck endpoint")
+            r = requests.get(url = ARGS.url + endpoint, timeout=5)
+            status_code = r.status_code
+        except Exception as exception:
+            print("Healthcheck failed, will retry again: " + str(exception))
+        if ARGS.verbose:
+            print("Healthcheck response:" + str(status_code))
 
 def register_user():
     # Insert query
@@ -57,6 +59,19 @@ def register_user():
     data = r.json()
     if ARGS.verbose:
         print("Registration response: " + str(data))
+    return data
+
+def login_test_user():
+    # Insert query
+    endpoint = "/auth/login"
+    body = {
+        "email" : "test1@test.com",
+        "password" : "password"
+    }
+    r = requests.post(url = ARGS.url + endpoint, data = body)
+    data = r.json()
+    if ARGS.verbose:
+        print("Login response: " + str(data))
     return data
 
 def generate_maze(size, token):
@@ -108,26 +123,9 @@ def solve_maze(mazeId, token):
 
     return data
 
-def addHighscore(mazeId, token, score, created_at):
-    # Insert query
-    endpoint = "/mazes/" + mazeId + "/highscores"
-    headers = {
-        "authorisation" : token        
-    }
-    body = {
-        "score" : score,
-        "created_at" : created_at,
-    }
-    r = requests.post(url = ARGS.url + endpoint, headers = headers, data = body)
-    data = r.json()
-    if ARGS.verbose:
-        print("Add highscore response: " + str(data))
-
-    return data
-
 def getBestScoreUser(mazeId, token):
     # Select query
-    endpoint = "/mazes/" + mazeId + "/bestScoreUser"
+    endpoint = "/mazes/" + str(mazeId) + "/bestScoreUser"
     headers = {
         "authorisation" : token        
     }
@@ -141,7 +139,7 @@ def getBestScoreUser(mazeId, token):
 
 def getMazeAverageScore(mazeId, token):
     # Select query
-    endpoint = "/mazes/" + mazeId + "/hsAvg"
+    endpoint = "/mazes/" + str(mazeId) + "/hsAvg"
     headers = {
         "authorisation" : token        
     }
@@ -152,29 +150,6 @@ def getMazeAverageScore(mazeId, token):
         print("Average score: " + str(data))
 
     return data
-
-def load_highscore_data(num_highscores, num_users):
-    try:
-        reg_tokens = []
-        # Register the users
-        for i in range(num_users):
-            reg_tokens.append(register_user()['token'])
-
-        # Create one maze to store the highscores
-        random_maze = ''.join(generate_maze(50, reg_tokens[0])['maze'])
-        maze_id = add_maze(random_maze, 50, reg_tokens[0])[0]['Id']
-
-        # Add the highscores
-        for i in range(num_highscores):
-            user = i%len(reg_tokens)
-            score = random.randint(1, 65535)
-            created_at = generate_random_datetime()
-            addHighscore(maze_id, reg_tokens[user], score, created_at)
-
-        return maze_id, reg_tokens[0]
-    except Exception as exception:
-        print(exception)
-        return -1
 
 def stress_app_requests(maze_size):
     try:
@@ -258,7 +233,7 @@ def main():
     global requests_output_file, queries_output_file
 
     init_args()
-
+    establish_connection()
     with open(requests_output_file, "w") as f:
         f.write("subprocesses,maze_size,avg_suite_time,max_suite_time,min_suite_time\n")
         f.close()
@@ -270,9 +245,9 @@ def main():
     total_iterations = (ARGS.subprocesses - 1) * (ARGS.maze_size - 4)
     idx = 0
     last_percent = 0
-    maze_id, user_token = load_highscore_data(ARGS.query_highscores, ARGS.query_users)
+    user_token = login_test_user()['token']
     for subprocess_amt in range(2, ARGS.subprocesses + 1):
-        run_benchmark_queries(maze_id, user_token, subprocess_amt)
+        run_benchmark_queries(MAZE_ID_HIGHSCORE_DATA, user_token, subprocess_amt)
         for maze_size in range(5, ARGS.maze_size + 1):
             idx += 1
             percentage_complete = (idx / total_iterations) * 100

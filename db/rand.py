@@ -13,7 +13,7 @@ def generate_random_date():
 
 def generate_row(i):
     print(i)
-    user_id=1
+    user_id=random.randint(1,100)
     maze_id=1
     score = random.randint(1,65000)
     date = generate_random_date()
@@ -24,7 +24,7 @@ def main():
     pool = mp.Pool(mp.cpu_count())
 
     # Step 2: `pool.apply` the `howmany_within_range()`
-    results = [pool.apply(generate_row, args=(row,)) for row in range(1000000)]
+    results = [pool.apply(generate_row, args=(row,)) for row in range(2000000)]
 
     # Step 3: Don't forget to close
     pool.close()    

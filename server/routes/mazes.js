@@ -7,7 +7,7 @@ router.post('/', async (req,res) => {
         const addMaze = await mazeController.add(req.body.maze, parseInt(req.body.sizeX), token);
         res.send(addMaze);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -17,7 +17,7 @@ router.get('/generate', async (req,res) => {
         res.send(maze);
     }catch(e){
 		console.log(e)
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -26,7 +26,7 @@ router.get('/:mazeId', async (req,res) => {
         const maze = await mazeController.info(req.params.mazeId);
         res.send(maze);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -36,7 +36,7 @@ router.get('/:mazeId/solve', async (req,res) => {
 		const solution = mazeController.solve(maze[0].maze, maze[0].sizeX)
         res.send(solution);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -46,7 +46,7 @@ router.get('/:mazeId/hsAvg', async (req,res) => {
         const highscoreAvg = await mazeController.highscoreAvg(req.params.mazeId);
         res.send(highscoreAvg);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -56,7 +56,7 @@ router.get('/:mazeId/bestScoreUser', async (req,res) => {
         const bestUser = await mazeController.getBestScoreUser(req.params.mazeId);
         res.send(bestUser);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -67,7 +67,7 @@ router.post('/:mazeId/highscores', async (req,res) => {
         const newHighscore = await mazeController.addHighscore(req.params.mazeId, token, req.body.score, req.body.created_at);
         res.send(newHighscore);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 
@@ -77,7 +77,7 @@ router.get('/', async (req,res) => {
         const mazes = await mazeController.info(false);
         res.send(mazes);
     }catch(e){
-        res.status(e.status).send(e.info);
+        res.status(e.status || 500).send(e.info);
     }
 })
 

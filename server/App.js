@@ -17,6 +17,7 @@ app.get('/', (req,res)=>{
 })
 
 app.use('/auth', require('./routes/auth'))
+app.use('/healthcheck', require('./routes/healthcheck'))
 app.use('/mazes', require('./middlewares/user/auth').userRoute, require('./routes/mazes'))
 
 
