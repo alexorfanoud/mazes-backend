@@ -18,7 +18,11 @@ spec:
       containers:
 
       - name: parsec
-        imagePullPolicy: Always # for debugging purpose and stream the development!
+        imagePullPolicy: IfNotPresent
         image: spirals/parsec-3.0
         securityContext:
           privileged: true
+        args:
+        - "-a run"
+        - "-i native"
+        - "-n 4"

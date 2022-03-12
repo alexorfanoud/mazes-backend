@@ -20,7 +20,8 @@ minikube delete -p thesis && minikube start -p thesis \
 
 ## To build
 ```
-MAZES_IMAGE=<docker repo>/mazes_backend
+DOCKER_REPO=<docker_repo>
+MAZES_IMAGE=$DOCKER_REPO/mazes_backend
 MAZES_TAG=latest
 sudo docker build -t $MAZES_IMAGE:$MAZES_TAG ../server/
 docker push $MAZES_IMAGE:$MAZES_TAG
@@ -28,7 +29,8 @@ docker push $MAZES_IMAGE:$MAZES_TAG
 
 ## To build benchmarks / stressors
 ```
-MAZES_IMAGE=<docker repo>/mazes_benchmark
+DOCKER_REPO=<docker_repo>
+MAZES_IMAGE=$DOCKER_REPO/mazes_benchmark
 MAZES_TAG=latest
 sudo docker build -t $MAZES_IMAGE:$MAZES_TAG ../benchmark/
 docker push $MAZES_IMAGE:$MAZES_TAG
