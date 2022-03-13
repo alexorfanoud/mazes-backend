@@ -1,0 +1,54 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mazes-benchmark
+    labels:
+        app: mazes-benchmark
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: mazes-benchmark
+    template:
+        metadata:
+            name: mazes-benchmark
+            labels:
+                app: mazes-benchmark
+            annotations:
+                prometheus.io/scrape: "true"
+                prometheus.io/port: "9100"
+        spec:
+            containers:
+            - name: mazes-benchmark
+              image: aorfanou/mazes_benchmark
+              imagePullPolicy: Always
+              args:
+              - "--url http://mazes-backend:$(SERVER_PORT)"
+              - "--maze_size 15"
+              - "--subprocesses 5"
+              - "--verbose"
+              envFrom:
+                  - configMapRef:
+                      name: app-conf
+              volumeMounts:
+                - name: benchmark-log
+                  mountPath: /metrics/benchmark
+
+            - name: node-exporter
+              image: prom/node-exporter:v0.18.1
+              securityContext:
+                privileged: true
+              args:
+                - --collector.textfile.directory
+                - /metrics/benchmark
+              ports:
+                - containerPort: 9100
+                  protocol: TCP
+              volumeMounts:
+                - name: benchmark-log
+                  mountPath: /metrics/benchmark
+            volumes:
+                - name: benchmark-log
+                  emptyDir: {}

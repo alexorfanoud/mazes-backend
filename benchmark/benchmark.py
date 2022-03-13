@@ -22,6 +22,9 @@ def init_args():
     parser.add_argument('--subprocesses', type=int, required=False,
             help="Number of maximum processes to spawn\
                 Default=5", default=5)
+    parser.add_argument('--outputdir', type=str, required=False,
+            help="Directory to output the metrics to\
+                Default=/metrics/benchmark", default="/metrics/benchmark")
     parser.add_argument('--verbose', action="store_true",
             help="Extra verbosity")
 
@@ -234,27 +237,33 @@ def main():
 
     init_args()
     establish_connection()
-    with open(requests_output_file, "w") as f:
-        f.write("subprocesses,maze_size,avg_suite_time,max_suite_time,min_suite_time\n")
-        f.close()
+    # with open(requests_output_file, "w") as f:
+    #     f.write("subprocesses,maze_size,avg_suite_time,max_suite_time,min_suite_time\n")
+    #     f.close()
 
-    with open(queries_output_file, "w") as f:
-        f.write("subprocesses,avg_suite_time,max_suite_time,min_suite_time\n")
-        f.close()
+    # with open(queries_output_file, "w") as f:
+    #     f.write("subprocesses,avg_suite_time,max_suite_time,min_suite_time\n")
+    #     f.close()
 
-    total_iterations = (ARGS.subprocesses - 1) * (ARGS.maze_size - 4)
-    idx = 0
-    last_percent = 0
-    user_token = login_test_user()['token']
-    for subprocess_amt in range(2, ARGS.subprocesses + 1):
-        run_benchmark_queries(MAZE_ID_HIGHSCORE_DATA, user_token, subprocess_amt)
-        for maze_size in range(5, ARGS.maze_size + 1):
-            idx += 1
-            percentage_complete = (idx / total_iterations) * 100
-            if percentage_complete % 2 < 1 and math.floor(percentage_complete) > last_percent:
-                last_percent = math.floor(percentage_complete)
-                print("Percentage complete: " + str(last_percent))
-            run_benchmark_requests(maze_size, subprocess_amt)
+    # total_iterations = (ARGS.subprocesses - 1) * (ARGS.maze_size - 4)
+    # idx = 0
+    # last_percent = 0
+    # user_token = login_test_user()['token']
+    # for subprocess_amt in range(2, ARGS.subprocesses + 1):
+    #     run_benchmark_queries(MAZE_ID_HIGHSCORE_DATA, user_token, subprocess_amt)
+    #     for maze_size in range(5, ARGS.maze_size + 1):
+    #         idx += 1
+    #         percentage_complete = (idx / total_iterations) * 100
+    #         if percentage_complete % 2 < 1 and math.floor(percentage_complete) > last_percent:
+    #             last_percent = math.floor(percentage_complete)
+    #             print("Percentage complete: " + str(last_percent))
+    #         run_benchmark_requests(maze_size, subprocess_amt)
+
+
+
+    with open("/metrics/benchmark/metrics.prom", "w+") as f:
+        f.write("aorf_metric_test 1\n")
+        f.close()
 
 if __name__ == "__main__":
     main()

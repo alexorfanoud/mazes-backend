@@ -16,9 +16,11 @@ resources:
   - backend.yaml
   - adminer.yaml
   - mysql.yaml
-  # - benchmark.yaml
   # - stress_ng.yaml
   # - parsec.yaml
+
+bases:
+  - benchmark
 
 configMapGenerator:
     - name: mysql-initdb
