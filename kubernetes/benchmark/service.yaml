@@ -10,6 +10,6 @@ spec:
     app: mazes-benchmark 
   ports:
     - name: benchmark-metrics
-      port: 9100
-      targetPort: 9100
+      port: 8001
+      targetPort: 8001
 

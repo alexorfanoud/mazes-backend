@@ -39,18 +39,44 @@ const getBestScoreUser = async (mazeId) => {
 
     const bestUsers = await query(`
 		SELECT 
-			u.email,
-			hs.score,
-			hs.created_at
+			u.Id,
+			avg(hs.score)
 		FROM 
 			highscores hs
 			inner join user u on u.Id=hs.userId
 		WHERE
-			score = (select max(score) from highscores where mazeId = ?)
-			and mazeId = ?
-		`, [mazeId, mazeId]);
+			score = (select max(score) from highscores)
+		GROUP BY
+			u.Id
+		`);
 
 	return bestUsers
+}
+
+const heavyQuery = async () => {
+
+    const heavyQ = await query(`
+		SELECT 
+			u.Id,
+			avg(hs.score)
+		FROM 
+			highscores hs
+			inner join user u on u.Id=hs.userId
+		WHERE
+			score = (select max(score) from highscores)
+			and u.Id in (
+				SELECT
+					u2.Id
+				FROM user u2
+				INNER JOIN mazes m on u2.Id=m.creator
+				GROUP BY u2.Id
+				HAVING count(*) > 1
+			)
+		GROUP BY
+			u.Id
+		`);
+
+	return heavyQ
 }
 
 const add = async ( maze, size, token ) => {
@@ -160,5 +186,6 @@ module.exports = {
 	solve: solve,
 	highscoreAvg: highscoreAvg,
 	getBestScoreUser: getBestScoreUser,
+	heavyQuery: heavyQuery,
 	addHighscore: addHighscore
 }

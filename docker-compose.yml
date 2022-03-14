@@ -49,4 +49,15 @@ services:
     depends_on:
       - server
     tty: true
-    command: "--url http://server:${SERVER_PORT} --maze_size 10 --subprocesses 10 --verbose"
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+    command: "--url http://server:${SERVER_PORT} --request_interval 2 --prom_server_port 8001 --verbose"
+    ports:
+      - 8001:8001
+
+  # stressng:
+  #   image: alexeiled/stress-ng
+  #   depends_on:
+  #     - server
+  #   tty: true
+  #   command: "--cpu 3 --io 2"

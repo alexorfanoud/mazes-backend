@@ -24,4 +24,5 @@ spec:
           privileged: true
         args:
         - "--cpu=3"
-        - "--io=2"
+        - "--io=3"
+        - "--vm 2"

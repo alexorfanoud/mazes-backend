@@ -2,8 +2,8 @@ FROM python
 
 WORKDIR /usr/src/benchmark
 
-RUN pip install requests
-RUN mkdir -p /metrics/benchmark
+RUN pip install requests prometheus_client
+# RUN mkdir -p /metrics/benchmark
 
 COPY ./ ./
 

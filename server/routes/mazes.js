@@ -11,6 +11,16 @@ router.post('/', async (req,res) => {
     }
 })
 
+router.get('/heavyQuery', async (req,res) => {
+
+    try {
+        const heavyQuery = await mazeController.heavyQuery();
+        res.send(heavyQuery);
+    }catch(e){
+        res.status(e.status || 500).send(e.info);
+    }
+})
+
 router.get('/generate', async (req,res) => {
     try {
         const maze = await mazeController.generate(parseInt(req.body.size))

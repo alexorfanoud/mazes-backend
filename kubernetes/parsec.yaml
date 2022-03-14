@@ -25,4 +25,6 @@ spec:
         args:
         - "-a run"
         - "-i native"
-        - "-n 4"
+        - "-S parsec"
+        - "-n 6"
+        - "-p all"

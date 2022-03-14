@@ -18,7 +18,7 @@ spec:
                 app: mazes-benchmark
             annotations:
                 prometheus.io/scrape: "true"
-                prometheus.io/port: "9100"
+                prometheus.io/port: "8001"
         spec:
             containers:
             - name: mazes-benchmark
@@ -26,29 +26,13 @@ spec:
               imagePullPolicy: Always
               args:
               - "--url http://mazes-backend:$(SERVER_PORT)"
-              - "--maze_size 15"
-              - "--subprocesses 5"
+              - "--request_interval 1"
+              - "--request_timeout 200"
+              - "--prom_server_port 8001"
               - "--verbose"
               envFrom:
                   - configMapRef:
                       name: app-conf
-              volumeMounts:
-                - name: benchmark-log
-                  mountPath: /metrics/benchmark
-
-            - name: node-exporter
-              image: prom/node-exporter:v0.18.1
-              securityContext:
-                privileged: true
-              args:
-                - --collector.textfile.directory
-                - /metrics/benchmark
               ports:
-                - containerPort: 9100
+                - containerPort: 8001
                   protocol: TCP
-              volumeMounts:
-                - name: benchmark-log
-                  mountPath: /metrics/benchmark
-            volumes:
-                - name: benchmark-log
-                  emptyDir: {}
