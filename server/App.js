@@ -10,7 +10,7 @@ app.listen(PORT, ()=> console.log(`Server listening on port ${PORT}`))
 
 app.use(cors())
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({extended:true, limit: '50mb'}))
 
 app.get('/', (req,res)=>{
     res.send('WELCOME')

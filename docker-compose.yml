@@ -51,13 +51,13 @@ services:
     tty: true
     environment:
       SERVER_PORT: ${SERVER_PORT}
-    command: "--url http://server:${SERVER_PORT} --request_interval 2 --prom_server_port 8001 --verbose"
+    command: "--url http://server:${SERVER_PORT} --request_interval 2 --prom_server_port 8001 --maze_size 1000 --verbose"
     ports:
       - 8001:8001
 
-  # stressng:
-  #   image: alexeiled/stress-ng
-  #   depends_on:
-  #     - server
-  #   tty: true
-  #   command: "--cpu 3 --io 2"
+  parsec:
+    image: spirals/parsec-3.0
+    depends_on:
+      - server
+    tty: true
+    command: "-a run -i native -S parsec -p ferret -n 6"

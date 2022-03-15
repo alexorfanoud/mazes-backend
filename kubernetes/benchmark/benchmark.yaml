@@ -29,6 +29,7 @@ spec:
               - "--request_interval 1"
               - "--request_timeout 200"
               - "--prom_server_port 8001"
+              - "--maze_size 1000"
               - "--verbose"
               envFrom:
                   - configMapRef:

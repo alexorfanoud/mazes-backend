@@ -19,6 +19,9 @@ def init_args():
     parser.add_argument('--request_timeout', type=int, required=False,
             help="Timeout limit for the requests\
                     Default=200", default=200)
+    parser.add_argument('--maze_size', type=int, required=False,
+            help="Size of mazes to generate and solve\
+                    Default=25", default=25)
     parser.add_argument('--verbose', action="store_true",
             help="Extra verbosity")
 
@@ -54,7 +57,7 @@ class Request:
 class RequestUtils:
 
     @staticmethod
-    def generate_random_user():
+    def get_signup_body():
         user = "user" + str(random.randint(1,sys.maxsize))
         body = {
             "email" : user + "@test.com",
@@ -65,20 +68,30 @@ class RequestUtils:
         return body
 
     @staticmethod
-    def get_default_user():
+    def get_login_body():
         return {
             "email" : "test1@test.com",
             "password" : "password",
         }
 
     @staticmethod
-    def generate_random_maze(size = 15):
-        maze = ["." for i in range(size*size)]
-        start_idx = random.randint(0, size*size -1)
-        end_idx = random.randint(0,start_idx) if start_idx > 0 else random.randint(start_idx, size*size - 1)
-        maze[start_idx] = "S"
-        maze[end_idx] = "T"
-        return {"maze": "".join(maze), "sizeX": size}
+    def get_add_maze_body(maze = None, size = None):
+        if size is None:
+            size = 15
+        if maze is None:
+            maze = ["." for i in range(size*size)]
+            start_idx = random.randint(0, size*size -1)
+            end_idx = random.randint(0,start_idx) if start_idx > 0 else random.randint(start_idx, size*size - 1)
+            maze[start_idx] = "S"
+            maze[end_idx] = "T"
+            maze = "".join(maze)
+        return {"maze": maze, "sizeX": size}
+
+    @staticmethod
+    def get_generate_maze_body(size = None):
+        if size is None:
+            size = 15
+        return {"size": size}
 
     @staticmethod
     def get_default_maze_id():
@@ -103,7 +116,7 @@ class RequestExecutor:
         self.add_maze_req = Request("add_maze", self.url, "/mazes", "POST", True) 
         self.get_mazes_req = Request("get_mazes", self.url, "/mazes", "GET", True) 
         self.get_maze_req = Request("get_maze", self.url, "/mazes/{mazeId}", "GET", True) 
-        self.generate_maze_req = Request("generate_maze", self.url, "/mazes/generate", "GET", True) 
+        self.generate_maze_req = Request("generate_maze", self.url, "/mazes/generate", "POST", True) 
         self.solve_maze_req = Request("solve_maze", self.url, "/mazes/{mazeId}/solve", "GET", True) 
         self.get_maze_hs_avg_req = Request("get_maze_hs_avg", self.url, "/mazes/{mazeId}/hsAvg", "GET", True) 
         self.get_maze_best_scorer_req = Request("get_maze_best_scorer", self.url, "/mazes/{mazeId}/bestScoreUser", "GET", True) 
@@ -117,11 +130,11 @@ class RequestExecutor:
                 (self.add_maze_req, self.add_maze),
                 (self.get_mazes_req, self.get_mazes),
                 (self.get_maze_req, self.get_maze),
-                # (self.generate_maze_req, self.generate_maze),
+                (self.generate_maze_req, self.generate_maze),
                 (self.solve_maze_req, self.solve_maze),
                 (self.get_maze_hs_avg_req, self.get_maze_hs_avg),
-                (self.get_maze_best_scorer_req, self.get_maze_best_scorer),
-                (self.heavy_query_req, self.heavy_query)
+                (self.get_maze_best_scorer_req, self.get_maze_best_scorer)
+                # (self.heavy_query_req, self.heavy_query)
         ]
 
 
@@ -155,13 +168,13 @@ class RequestExecutor:
                 print(f"Sent request: {ret.get('request').get_labels()} got status_code: {ret.get('status_code')} in time {ret.get('time')}")
             return ret
 
-    def signup(self, user = None):
-        if user is None:
-            user = RequestUtils.generate_random_user()
-        return self.send_request(self.signup_req, data = user)
+    def signup(self, body = None):
+        if body is None:
+            body = RequestUtils.get_signup_body()
+        return self.send_request(self.signup_req, data = body)
 
-    def login(self, user = RequestUtils.get_default_user()):
-        return self.send_request(self.login_req, data = user)
+    def login(self, body = RequestUtils.get_login_body()):
+        return self.send_request(self.login_req, data = body)
 
     def logout(self, token = None):
         if token is None:
@@ -172,10 +185,11 @@ class RequestExecutor:
     def db_healthcheck(self):
         return self.send_request(self.db_healthcheck_req)
 
-    def add_maze(self, maze = RequestUtils.generate_random_maze(), token = None):
+    def add_maze(self, maze = None, size = None, token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.add_maze_req, data = maze, token = token)
+        body = RequestUtils.get_add_maze_body(maze, size)
+        return self.send_request(self.add_maze_req, data = body, token = token)
 
     def get_mazes(self, token = None):
         if token is None:
@@ -187,10 +201,11 @@ class RequestExecutor:
             token = self.get_token()
         return self.send_request(self.get_maze_req, mazeId = mazeId, token = token)
 
-    def generate_maze(self, token = None):
+    def generate_maze(self, size = None, token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.generate_maze_req, token = token)
+        body = RequestUtils.get_generate_maze_body(size)
+        return self.send_request(self.generate_maze_req, data = body, token = token)
 
     def solve_maze(self, mazeId = RequestUtils.get_default_maze_id(), token = None):
         if token is None:
@@ -245,8 +260,17 @@ def main():
 
 
     while True:
-        for request, func in executor.get_requests():
-            func()
-        time.sleep(ARGS.request_interval)
+        try:
+            executor.signup()
+            executor.login()
+            new_maze = "".join(executor.generate_maze(ARGS.maze_size)['response_body']['maze'])
+            maze_id = executor.add_maze(new_maze, ARGS.maze_size)['response_body'][0]['Id']
+            executor.solve_maze(maze_id)
+            executor.get_maze_hs_avg()
+            executor.get_maze_best_scorer()
+        except Exception as e:
+            print(e)
+        finally:    
+            time.sleep(ARGS.request_interval)
 
 main()

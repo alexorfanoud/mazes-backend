@@ -39,16 +39,16 @@ const getBestScoreUser = async (mazeId) => {
 
     const bestUsers = await query(`
 		SELECT 
-			u.Id,
-			avg(hs.score)
+			u.email,
+			hs.score,
+			hs.created_at
 		FROM 
 			highscores hs
 			inner join user u on u.Id=hs.userId
 		WHERE
-			score = (select max(score) from highscores)
-		GROUP BY
-			u.Id
-		`);
+			score = (select max(score) from highscores where mazeId = ?)
+			and mazeId = ?
+		`, [mazeId, mazeId]);
 
 	return bestUsers
 }
