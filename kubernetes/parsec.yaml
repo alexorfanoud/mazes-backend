@@ -27,4 +27,3 @@ spec:
         - "-i native"
         - "-S parsec"
         - "-n 6"
-        - "-p ferret"
