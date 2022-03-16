@@ -16,8 +16,8 @@ resources:
   - backend.yaml
   - adminer.yaml
   - mysql.yaml
-  - stress_ng.yaml
-  # - parsec.yaml
+  # - stress_ng.yaml
+  - parsec.yaml
 
 bases:
   - benchmark
