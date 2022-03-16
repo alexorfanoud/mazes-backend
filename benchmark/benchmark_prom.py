@@ -3,7 +3,7 @@ import requests
 import sys
 import random
 import argparse
-from prometheus_client import start_http_server, Histogram, Gauge
+from prometheus_client import start_http_server, Gauge
 
 def init_args():
     parser = argparse.ArgumentParser()
@@ -101,8 +101,7 @@ class RequestExecutor:
     def __init__(self, url):
         self.url = url
         self.user_token = None
-        self.request_time = Histogram('benchmark_request_processing_seconds', 'Time spent processing benchmark requests', ['endpoint', 'method', 'status_code'])
-        self.request_time_gauge = Gauge('benchmark_request_processing_seconds_gauge', 'Time spent processing benchmark requests gauge', ['endpoint', 'method', 'status_code'])
+        self.request_time = Gauge('benchmark_request_processing_seconds', 'Time spent processing benchmark requests', ['endpoint', 'method', 'status_code'])
 
         # /auth
         self.signup_req = Request("signup", self.url, "/auth/signup", "POST") 
@@ -122,29 +121,6 @@ class RequestExecutor:
         self.get_maze_best_scorer_req = Request("get_maze_best_scorer", self.url, "/mazes/{mazeId}/bestScoreUser", "GET", True) 
         self.heavy_query_req = Request("heavy_query", self.url, "/mazes/heavyQuery", "GET", True) 
 
-        self.request_list = [
-                (self.signup_req, self.signup),
-                (self.login_req, self.login),
-                # (self.logout_req, self.logout),
-                (self.db_healthcheck_req, self.db_healthcheck),
-                (self.add_maze_req, self.add_maze),
-                (self.get_mazes_req, self.get_mazes),
-                (self.get_maze_req, self.get_maze),
-                (self.generate_maze_req, self.generate_maze),
-                (self.solve_maze_req, self.solve_maze),
-                (self.get_maze_hs_avg_req, self.get_maze_hs_avg),
-                (self.get_maze_best_scorer_req, self.get_maze_best_scorer)
-                # (self.heavy_query_req, self.heavy_query)
-        ]
-
-
-    def get_requests(self):
-        return self.request_list
-
-    def route_request(self, req_name, **kwargs):
-        for request in self.request_list:
-            if req_name == request.get_name():
-                return self.send_request(request, **kwargs)
 
     def get_token(self):
         if self.user_token is None:
@@ -157,8 +133,7 @@ class RequestExecutor:
             start = time.time()
             response = request.send_request(**kwargs)
             finish  = time.time()
-            self.request_time.labels(*request.get_labels(), response.status_code).observe(finish-start)
-            self.request_time_gauge.labels(*request.get_labels(), response.status_code).set(finish-start)
+            self.request_time.labels(*request.get_labels(), response.status_code).set(finish-start)
             ret = {"request": request, "response_body": response.json(), "status_code": response.status_code, "time": finish - start}
         except Exception as e:
             print(e)
@@ -227,29 +202,11 @@ class RequestExecutor:
             token = self.get_token()
         return self.send_request(self.heavy_query_req, token = token)
 
-class PrometheusParser():
-    def parse_response(self, request, response, time):
-        endpoint, method = request.get_labels()
-        status_code = response.status_code if response is not None else -1
-        return self.create_line("benchmark_request_time", value = time, endpoint = endpoint, method = method, status_code = status_code)
-
-    def create_line(self, metric_name, value, **kwargs):
-        labels = ""
-        for label in kwargs:
-            labels += f",{label}=\"{kwargs[label]}\""
-        labels = "{" + labels[1:] + "}"
-
-        prom_line = f"{metric_name}{labels} {value}"
-        return prom_line
-
-        
-
 def main():
     global ARGS
 
     init_args()
     executor = RequestExecutor(ARGS.url)
-    prom_parser = PrometheusParser()
     start_http_server(ARGS.prom_server_port)
 
     server_healthy = executor.db_healthcheck().get('status_code')
