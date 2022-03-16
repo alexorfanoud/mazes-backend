@@ -56,8 +56,8 @@ services:
       - 8001:8001
 
   parsec:
-    image: spirals/parsec-3.0
+    image: alexeiled/stress-ng
     depends_on:
       - server
     tty: true
-    command: "-a run -i native -S parsec -p ferret -n 6"
+    command: "--cpu=3 --io=3"
