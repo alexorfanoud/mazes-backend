@@ -4,3 +4,6 @@
 [submodule "kubernetes/cluster/intel-cmt-cat"]
 	path = kubernetes/cluster/intel-cmt-cat
 	url = git@github.com:alexorfanoud/intel-cmt-cat.git
+[submodule "kubernetes/wca"]
+	path = kubernetes/wca
+	url = git@github.com:alexorfanoud/workload-collocation-agent.git
