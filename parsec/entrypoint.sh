@@ -3,19 +3,19 @@
 while getopts ":S:a:p:i:n:" opt; do
   case $opt in
     S)
-      suite=$OPTARG
+	  suite=$(echo $OPTARG | xargs)
       ;;
     a)
-	  action=$OPTARG
+	  action=$(echo $OPTARG | xargs)
       ;;
     p)
-      packages=$OPTARG
+	  packages=$(echo $OPTARG | xargs)
       ;;
     i)
-      input=$OPTARG
+	  input=$(echo $OPTARG | xargs)
       ;;
     n)
-      threads=$OPTARG
+	  threads=$(echo $OPTARG | xargs)
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -28,7 +28,6 @@ while getopts ":S:a:p:i:n:" opt; do
   esac
 done
 shift $((OPTIND-1))
-
 
 IFS=','
 read -a packages_arr <<< "$packages"

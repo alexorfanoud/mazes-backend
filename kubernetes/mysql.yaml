@@ -34,16 +34,36 @@ spec:
                 app: mysql
         spec:
             initContainers:
-              - name: install
+              - name: install-highscores
                 image: busybox
                 command:
                 - wget
                 - "-O"
-                - "/var/lib/mysql-highscores/init_highscores.txt"
+                - "/var/lib/mysql-init-files/init_highscores.txt"
                 - https://raw.githubusercontent.com/alexorfanoud/mazes-backend/master/db/init_highscores.txt
                 volumeMounts:
-                - name: mysql-init-script-highscores
-                  mountPath: /var/lib/mysql-highscores
+                - name: mysql-init-files
+                  mountPath: /var/lib/mysql-init-files
+              - name: install-users
+                image: busybox
+                command:
+                - wget
+                - "-O"
+                - "/var/lib/mysql-init-files/init_users.txt"
+                - https://raw.githubusercontent.com/alexorfanoud/mazes-backend/master/db/init_users.txt
+                volumeMounts:
+                - name: mysql-init-files
+                  mountPath: /var/lib/mysql-init-files
+              - name: install-mazes
+                image: busybox
+                command:
+                - wget
+                - "-O"
+                - "/var/lib/mysql-init-files/init_mazes.txt"
+                - https://raw.githubusercontent.com/alexorfanoud/mazes-backend/master/db/init_mazes.txt
+                volumeMounts:
+                - name: mysql-init-files
+                  mountPath: /var/lib/mysql-init-files
             containers:
             - name: mysql
               image: mysql:5.6
@@ -57,15 +77,8 @@ spec:
                 mountPath: /var/lib/mysql
               - name: mysql-init-script
                 mountPath: /docker-entrypoint-initdb.d
-              - name: mysql-init-script-mazes
-                mountPath: /var/lib/mysql-data/init_mazes.txt
-                subPath: init_mazes.txt
-              - name: mysql-init-script-users
-                mountPath: /var/lib/mysql-data/init_users.txt
-                subPath: init_users.txt
-              - name: mysql-init-script-highscores
-                mountPath: /var/lib/mysql-data/init_highscores.txt
-                subPath: init_highscores.txt
+              - name: mysql-init-files
+                mountPath: /var/lib/mysql-data
             volumes:
             - name: mysql-persistent-storage
               persistentVolumeClaim:
@@ -73,13 +86,7 @@ spec:
             - name: mysql-init-script
               configMap:
                   name: mysql-initdb
-            - name: mysql-init-script-mazes
-              configMap:
-                  name: mysql-initdb-mazes
-            - name: mysql-init-script-users
-              configMap:
-                  name: mysql-initdb-users
-            - name: mysql-init-script-highscores
+            - name: mysql-init-files
               emptyDir: {}
 ---
 
@@ -111,4 +118,3 @@ spec:
   resources:
     requests:
       storage: 2Gi
----

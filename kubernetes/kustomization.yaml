@@ -9,6 +9,9 @@ images:
   - name: aorfanou/mazes_benchmark
     newName: aorfanou/mazes_benchmark
     newTag: latest
+  - name: aorfanou/parsec
+    newName: aorfanou/parsec
+    newTag: latest
 
 resources:
   - namespace.yaml
@@ -16,8 +19,8 @@ resources:
   - backend.yaml
   - adminer.yaml
   - mysql.yaml
-  - stress_ng.yaml
-  - parsec.yaml
+  # - stress_ng.yaml
+  # - parsec.yaml
 
 bases:
   - benchmark
@@ -26,9 +29,3 @@ configMapGenerator:
     - name: mysql-initdb
       files:
       - mysql-initdb-config.sql
-    - name: mysql-initdb-mazes
-      files:
-      - db-data/init_mazes.txt
-    - name: mysql-initdb-users
-      files:
-      - db-data/init_users.txt

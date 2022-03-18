@@ -102,7 +102,7 @@ class RequestExecutor:
         self.url = url
         self.user_token = None
         self.request_time = Gauge('benchmark_request_processing_seconds', 'Time spent processing benchmark requests', ['endpoint', 'method', 'status_code'])
-        self.query_type_count = Counter('benchmark_query_type_count', 'Amount of queries executed from the benchmark per type (select, insert)', ['query_type'])
+        self.query_type_counter = Counter('benchmark_query_type_count', 'Amount of queries executed from the benchmark per type (select, insert)', ['query_type'])
 
         # /auth
         self.signup_req = Request("signup", self.url, "/auth/signup", "POST") 

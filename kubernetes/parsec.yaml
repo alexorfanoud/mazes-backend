@@ -18,13 +18,13 @@ spec:
       containers:
 
       - name: parsec
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         image: aorfanou/parsec
         securityContext:
           privileged: true
         args:
         - "-a run"
-        - "-i simsmall"
+        - "-i native"
         - "-S parsec"
         - "-n 6"
         - "-p ferret,freqmine,blackscholes"
