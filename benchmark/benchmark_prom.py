@@ -3,7 +3,7 @@ import requests
 import sys
 import random
 import argparse
-from prometheus_client import start_http_server, Gauge
+from prometheus_client import start_http_server, Gauge, Counter
 
 def init_args():
     parser = argparse.ArgumentParser()
@@ -102,6 +102,7 @@ class RequestExecutor:
         self.url = url
         self.user_token = None
         self.request_time = Gauge('benchmark_request_processing_seconds', 'Time spent processing benchmark requests', ['endpoint', 'method', 'status_code'])
+        self.query_type_count = Counter('benchmark_query_type_count', 'Amount of queries executed from the benchmark per type (select, insert)', ['query_type'])
 
         # /auth
         self.signup_req = Request("signup", self.url, "/auth/signup", "POST") 
@@ -146,61 +147,84 @@ class RequestExecutor:
     def signup(self, body = None):
         if body is None:
             body = RequestUtils.get_signup_body()
-        return self.send_request(self.signup_req, data = body)
+        ret = self.send_request(self.signup_req, data = body)
+        self.query_type_counter.labels('insert').inc()
+        return ret
 
     def login(self, body = RequestUtils.get_login_body()):
-        return self.send_request(self.login_req, data = body)
+        ret = self.send_request(self.login_req, data = body)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
     def logout(self, token = None):
         if token is None:
             token = self.get_token()
         self.user_token = None
-        return self.send_request(self.logout_req, token = token)
+        ret = self.send_request(self.logout_req, token = token)
+        self.query_type_counter.labels('insert').inc()
+        return ret
 
     def db_healthcheck(self):
-        return self.send_request(self.db_healthcheck_req)
+        ret = self.send_request(self.db_healthcheck_req)
+        # self.query_type_counter.labels('select').inc()
+        return ret
 
     def add_maze(self, maze = None, size = None, token = None):
         if token is None:
             token = self.get_token()
         body = RequestUtils.get_add_maze_body(maze, size)
-        return self.send_request(self.add_maze_req, data = body, token = token)
+        ret = self.send_request(self.add_maze_req, data = body, token = token)
+        self.query_type_counter.labels('insert').inc()
+        return ret
 
     def get_mazes(self, token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.get_mazes_req, token = token)
+        ret = self.send_request(self.get_mazes_req, token = token)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
     def get_maze(self, mazeId = RequestUtils.get_default_maze_id(), token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.get_maze_req, mazeId = mazeId, token = token)
+        ret = self.send_request(self.get_maze_req, mazeId = mazeId, token = token)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
     def generate_maze(self, size = None, token = None):
         if token is None:
             token = self.get_token()
         body = RequestUtils.get_generate_maze_body(size)
-        return self.send_request(self.generate_maze_req, data = body, token = token)
+        ret = self.send_request(self.generate_maze_req, data = body, token = token)
+        return ret
 
     def solve_maze(self, mazeId = RequestUtils.get_default_maze_id(), token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.solve_maze_req, mazeId = mazeId, token = token)
+        ret = self.send_request(self.solve_maze_req, mazeId = mazeId, token = token)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
     def get_maze_hs_avg(self, mazeId = RequestUtils.get_default_maze_id(), token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.get_maze_hs_avg_req, mazeId = mazeId, token = token)
+        ret = self.send_request(self.get_maze_hs_avg_req, mazeId = mazeId, token = token)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
     def get_maze_best_scorer(self, mazeId = RequestUtils.get_default_maze_id(), token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.get_maze_best_scorer_req, mazeId = mazeId, token = token)
+        ret = self.send_request(self.get_maze_best_scorer_req, mazeId = mazeId, token = token)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
     def heavy_query(self, token = None):
         if token is None:
             token = self.get_token()
-        return self.send_request(self.heavy_query_req, token = token)
+        ret = self.send_request(self.heavy_query_req, token = token)
+        self.query_type_counter.labels('select').inc()
+        return ret
 
 def main():
     global ARGS
