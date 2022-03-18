@@ -19,11 +19,12 @@ spec:
 
       - name: parsec
         imagePullPolicy: IfNotPresent
-        image: spirals/parsec-3.0
+        image: aorfanou/parsec
         securityContext:
           privileged: true
         args:
         - "-a run"
-        - "-i native"
+        - "-i simsmall"
         - "-S parsec"
         - "-n 6"
+        - "-p ferret,freqmine,blackscholes"

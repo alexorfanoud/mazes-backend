@@ -56,8 +56,8 @@ services:
       - 8001:8001
 
   parsec:
-    image: alexeiled/stress-ng
+    build: ./parsec
     depends_on:
       - server
     tty: true
-    command: "--cpu=3 --io=3"
+    command: "-S parsec -i simsmall -a run -p ferret,freqmine,blackscholes"
