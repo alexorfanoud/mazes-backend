@@ -20,6 +20,7 @@ spec:
       - name: parsec
         imagePullPolicy: Always
         image: aorfanou/parsec
+        tty: true
         securityContext:
           privileged: true
         args:

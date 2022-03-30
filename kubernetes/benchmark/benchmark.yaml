@@ -24,6 +24,7 @@ spec:
             - name: mazes-benchmark
               image: aorfanou/mazes_benchmark
               imagePullPolicy: Always
+              tty: true
               args:
               - "--url http://mazes-backend:$(SERVER_PORT)"
               - "--request_interval 1"
