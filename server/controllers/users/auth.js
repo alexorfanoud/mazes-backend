@@ -27,7 +27,7 @@ const login = async (userOpts) => {
         const userPassword = user[0].password;       
         const validates = await bcrypt.compare(userOpts.password, userPassword);
         if(!validates) throw new AuthError({password: 'Wrong password'});
-        const token = await jwt.sign({_id:user[0].Id}, process.env.TOKEN_SECRET, {expiresIn:'60m'})
+        const token = await jwt.sign({_id:user[0].Id}, process.env.TOKEN_SECRET, {expiresIn:'180m'})
         return {email:userOpts.email,token:token} 
 }
 
