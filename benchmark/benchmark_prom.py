@@ -142,6 +142,8 @@ class RequestExecutor:
         finally:
             if ARGS.verbose:
                 print(f"Sent request: {ret.get('request').get_labels()} got status_code: {ret.get('status_code')} in time {ret.get('time')}")
+                if ret.get('status_code') != 200:
+                    print(f"Got erroneous status code, body is {ret.get('response_body')}")
             return ret
 
     def signup(self, body = None):
