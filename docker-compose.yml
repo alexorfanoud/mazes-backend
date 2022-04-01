@@ -60,4 +60,4 @@ services:
     depends_on:
       - server
     tty: true
-    command: "-S parsec -i simsmall -a run -p ferret,freqmine,blackscholes"
+    command: "-S parsec -i simsmall -a run -n 6 -s 5s -p bodytrack,canneal,dedup,facesim,ferret,fluidanimate,freqmine,streamcluster,swaptions,vips,x264"

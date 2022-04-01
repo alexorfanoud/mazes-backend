@@ -28,4 +28,5 @@ spec:
         - "-i native"
         - "-S parsec"
         - "-n 6"
+        - "-s 1m"
         - "-p bodytrack,canneal,dedup,facesim,ferret,fluidanimate,freqmine,streamcluster,swaptions,vips,x264"
