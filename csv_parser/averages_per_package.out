@@ -1,0 +1,166 @@
+Namespace(csv_path='/home/alex/Downloads/broady-03-04-2022.csv', package_intervals_csv='/home/alex/dev/mazes-backend/csv_parser/package_intervals.csv', verbose=False)
+Processing bodytrack
+==========================
+/auth/login - POST                      0.347875
+/auth/signup - POST                     0.503563
+/healthcheck/db - GET                   0.025200
+/healthcheck/db - GET.1                 0.007790
+/mazes - POST                           1.534562
+/mazes/generate - POST                 13.932500
+/mazes/{mazeId}/bestScoreUser - GET    11.093750
+/mazes/{mazeId}/hsAvg - GET             7.208750
+/mazes/{mazeId}/solve - GET             1.051500
+dtype: float64
+==========================
+
+
+Processing canneal
+==========================
+/auth/login - POST                      0.375217
+/auth/signup - POST                     0.525304
+/healthcheck/db - GET                   0.025200
+/healthcheck/db - GET.1                 0.007790
+/mazes - POST                           1.365565
+/mazes/generate - POST                 14.827826
+/mazes/{mazeId}/bestScoreUser - GET    12.470000
+/mazes/{mazeId}/hsAvg - GET             6.475217
+/mazes/{mazeId}/solve - GET             0.882348
+dtype: float64
+==========================
+
+
+Processing dedup
+==========================
+/auth/login - POST                      0.166143
+/auth/signup - POST                     0.362714
+/healthcheck/db - GET                   0.025200
+/healthcheck/db - GET.1                 0.007790
+/mazes - POST                           1.022429
+/mazes/generate - POST                 13.137143
+/mazes/{mazeId}/bestScoreUser - GET     4.698571
+/mazes/{mazeId}/hsAvg - GET             3.984286
+/mazes/{mazeId}/solve - GET             0.646714
+dtype: float64
+==========================
+
+
+Processing facesim
+==========================
+/auth/login - POST                      0.372550
+/auth/signup - POST                     0.461325
+/healthcheck/db - GET                   0.025200
+/healthcheck/db - GET.1                 0.007790
+/mazes - POST                           1.575650
+/mazes/generate - POST                 15.591000
+/mazes/{mazeId}/bestScoreUser - GET    13.659000
+/mazes/{mazeId}/hsAvg - GET             7.747000
+/mazes/{mazeId}/solve - GET             1.042350
+dtype: float64
+==========================
+
+
+Processing ferret
+==========================
+/auth/login - POST                      0.748219
+/auth/signup - POST                     0.735750
+/healthcheck/db - GET                   0.025200
+/healthcheck/db - GET.1                 0.007790
+/mazes - POST                           2.968562
+/mazes/generate - POST                 29.478750
+/mazes/{mazeId}/bestScoreUser - GET    20.786250
+/mazes/{mazeId}/hsAvg - GET            14.746250
+/mazes/{mazeId}/solve - GET             2.180063
+dtype: float64
+==========================
+
+
+Processing fluidanimate
+==========================
+/auth/login - POST                    NaN
+/auth/signup - POST                   NaN
+/healthcheck/db - GET                 NaN
+/healthcheck/db - GET.1               NaN
+/mazes - POST                         NaN
+/mazes/generate - POST                NaN
+/mazes/{mazeId}/bestScoreUser - GET   NaN
+/mazes/{mazeId}/hsAvg - GET           NaN
+/mazes/{mazeId}/solve - GET           NaN
+dtype: float64
+==========================
+
+
+Processing freqmine
+==========================
+/auth/login - POST                      0.560054
+/auth/signup - POST                     0.589459
+/healthcheck/db - GET                   0.025200
+/healthcheck/db - GET.1                 0.007790
+/mazes - POST                           2.296108
+/mazes/generate - POST                 22.351081
+/mazes/{mazeId}/bestScoreUser - GET    17.055135
+/mazes/{mazeId}/hsAvg - GET            11.246216
+/mazes/{mazeId}/solve - GET             1.350243
+dtype: float64
+==========================
+
+
+Processing streamcluster
+==========================
+/auth/login - POST                     0.171339
+/auth/signup - POST                    0.142484
+/healthcheck/db - GET                  0.025200
+/healthcheck/db - GET.1                0.007790
+/mazes - POST                          0.709339
+/mazes/generate - POST                 6.179194
+/mazes/{mazeId}/bestScoreUser - GET    3.930323
+/mazes/{mazeId}/hsAvg - GET            2.003226
+/mazes/{mazeId}/solve - GET            0.408613
+dtype: float64
+==========================
+
+
+Processing swaptions
+==========================
+/auth/login - POST                     0.167575
+/auth/signup - POST                    0.159925
+/healthcheck/db - GET                  0.025200
+/healthcheck/db - GET.1                0.007790
+/mazes - POST                          0.675225
+/mazes/generate - POST                 5.804500
+/mazes/{mazeId}/bestScoreUser - GET    3.943500
+/mazes/{mazeId}/hsAvg - GET            1.954750
+/mazes/{mazeId}/solve - GET            0.429550
+dtype: float64
+==========================
+
+
+Processing vips
+==========================
+/auth/login - POST                     0.147500
+/auth/signup - POST                    0.199625
+/healthcheck/db - GET                  0.025200
+/healthcheck/db - GET.1                0.007790
+/mazes - POST                          0.729875
+/mazes/generate - POST                 6.058125
+/mazes/{mazeId}/bestScoreUser - GET    3.981250
+/mazes/{mazeId}/hsAvg - GET            1.995625
+/mazes/{mazeId}/solve - GET            0.387500
+dtype: float64
+==========================
+
+
+Processing x264
+==========================
+/auth/login - POST                     0.168175
+/auth/signup - POST                    0.231125
+/healthcheck/db - GET                  0.025200
+/healthcheck/db - GET.1                0.007790
+/mazes - POST                          0.690375
+/mazes/generate - POST                 6.077500
+/mazes/{mazeId}/bestScoreUser - GET    3.676250
+/mazes/{mazeId}/hsAvg - GET            2.026250
+/mazes/{mazeId}/solve - GET            0.330250
+dtype: float64
+==========================
+
+
